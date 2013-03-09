@@ -63,6 +63,7 @@ class PadDraw extends JComponent {
                 oldY = currentY;
             }
         });
+        
     }
 
     @Override
@@ -93,38 +94,38 @@ class PadDraw extends JComponent {
         repaint();
     }
 
-    public void drawLinePlz(int oldX, int oldY, int currentX, int currentY, int thickness) {
-
-        int dX = currentX - oldX;
-        int dY = currentY - oldY;
-        // line length
-        double lineLength = Math.sqrt(dX * dX + dY * dY);
-
-        double scale = (double) (thickness) / (2 * lineLength);
-
-        // The x,y increments from an endpoint needed to create a rectangle...
-        double ddx = -scale * (double) dY;
-        double ddy = scale * (double) dX;
-        ddx += (ddx > 0) ? 0.5 : -0.5;
-        ddy += (ddy > 0) ? 0.5 : -0.5;
-        int dx = (int) ddx;
-        int dy = (int) ddy;
-
-        // Now we can compute the corner points...
-        int xPoints[] = new int[4];
-        int yPoints[] = new int[4];
-
-        xPoints[0] = oldX + dx;
-        yPoints[0] = oldY + dy;
-        xPoints[1] = oldX - dx;
-        yPoints[1] = oldY - dy;
-        xPoints[2] = currentX - dx;
-        yPoints[2] = currentY - dy;
-        xPoints[3] = currentX + dx;
-        yPoints[3] = currentY + dy;
-
-        graphics2D.fillPolygon(xPoints, yPoints, 4);
-    }
+//    public void drawLinePlz(int oldX, int oldY, int currentX, int currentY, int thickness) {
+//
+//        int dX = currentX - oldX;
+//        int dY = currentY - oldY;
+//        // line length
+//        double lineLength = Math.sqrt(dX * dX + dY * dY);
+//
+//        double scale = (double) (thickness) / (2 * lineLength);
+//
+//        // The x,y increments from an endpoint needed to create a rectangle...
+//        double ddx = -scale * (double) dY;
+//        double ddy = scale * (double) dX;
+//        ddx += (ddx > 0) ? 0.5 : -0.5;
+//        ddy += (ddy > 0) ? 0.5 : -0.5;
+//        int dx = (int) ddx;
+//        int dy = (int) ddy;
+//
+//        // Now we can compute the corner points...
+//        int xPoints[] = new int[4];
+//        int yPoints[] = new int[4];
+//
+//        xPoints[0] = oldX + dx;
+//        yPoints[0] = oldY + dy;
+//        xPoints[1] = oldX - dx;
+//        yPoints[1] = oldY - dy;
+//        xPoints[2] = currentX - dx;
+//        yPoints[2] = currentY - dy;
+//        xPoints[3] = currentX + dx;
+//        yPoints[3] = currentY + dy;
+//
+//        graphics2D.fillPolygon(xPoints, yPoints, 4);
+//    }
 
     public void changeBrushSize(int size) {
         thickness = size;
