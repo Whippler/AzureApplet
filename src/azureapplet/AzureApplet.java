@@ -5,16 +5,24 @@ import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
 import java.lang.reflect.InvocationTargetException;
 import javax.swing.*;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
 
 public class AzureApplet extends JApplet {
+
     private JPanel panel;
     private PadDraw draw;
+    JColorChooser chooser;
+
     @Override
     public void init() {
         try {
             javax.swing.SwingUtilities.invokeAndWait(new Runnable() {
+
                 @Override
                 public void run() {
                     createGUI();
@@ -28,28 +36,36 @@ public class AzureApplet extends JApplet {
     private void createGUI() {
 
         panel = new JPanel();
-        panel.setPreferredSize(new Dimension(32, 68));
-        
+        //panel.setPreferredSize(new Dimension(32, 68));
+
         //OTSIKKO
         JLabel Otsikko = new JLabel(
                 "DRAW PAD");
-       // valikko.add(Otsikko);
+        // valikko.add(Otsikko);
         Otsikko.setHorizontalAlignment(JLabel.LEFT);
         //Otsikko.setBorder(BorderFactory.createMatteBorder(1, 1, 1, 1, Color.black));
         //valikko.add(Otsikko);
-        
+
         //VÄRIT
-        
+        chooser = new JColorChooser();
+        ChangeListener changeListener = new ChangeListener() {
+
+            public void stateChanged(ChangeEvent changeEvent) {
+                draw.changeColor(chooser.getColor());
+            }
+        };
+        chooser.getSelectionModel().addChangeListener(changeListener);
+        panel.add(chooser);
 //        valikko.setBounds(100, 1, 300, 25);
 //        valikko.setBackground(Color.GRAY);
 //        getContentPane().add(valikko);
-        makeColorButton(Color.BLUE);
-        makeColorButton(Color.MAGENTA);
-        makeColorButton(Color.RED);
-        makeColorButton(Color.GREEN);
-        makeColorButton(Color.BLACK);
-        makeColorButton(Color.WHITE);
-        makeColorButton(Color.YELLOW);
+//        makeColorButton(Color.BLUE);
+//        makeColorButton(Color.MAGENTA);
+//        makeColorButton(Color.RED);
+//        makeColorButton(Color.GREEN);
+//        makeColorButton(Color.BLACK);
+//        makeColorButton(Color.WHITE);
+//        makeColorButton(Color.YELLOW);
 
         //PIIRTO ALUE
         getContentPane().setLayout(new BorderLayout());
@@ -61,16 +77,17 @@ public class AzureApplet extends JApplet {
 
         //OTSIKKO
     }
+
     public void makeColorButton(final Color color) {
         JButton tempButton = new JButton();
         tempButton.setBackground(color);
         tempButton.setPreferredSize(new Dimension(16, 16));
         panel.add(tempButton);
         tempButton.addActionListener(new ActionListener() {
+
             public void actionPerformed(ActionEvent e) {
                 draw.changeColor(color);
             }
         });
     }
-
 }
