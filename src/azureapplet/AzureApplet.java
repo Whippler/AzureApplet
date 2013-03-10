@@ -61,6 +61,11 @@ public class AzureApplet extends JApplet {
             }
         };
         chooser.getSelectionModel().addChangeListener(changeListener);
+        JPanel previewPanel = new JPanel();
+        previewPanel.setVisible(false);
+        chooser.setPreviewPanel(previewPanel);
+        
+        
         panel.add(chooser);
 //        valikko.setBounds(100, 1, 300, 25);
 //        valikko.setBackground(Color.GRAY);
