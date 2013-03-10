@@ -64,6 +64,7 @@ public class AzureApplet extends JApplet {
         JPanel previewPanel = new JPanel();
         previewPanel.setVisible(false);
         chooser.setPreviewPanel(previewPanel);
+       
         
         
         panel.add(chooser);
@@ -92,8 +93,21 @@ public class AzureApplet extends JApplet {
                 draw.clear();
             }
         });
-
+        final JButton hideChooserButton = new JButton("Hide chooser");
+        hideChooserButton.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                if (chooser.isVisible()) {
+                    chooser.setVisible(false);
+                    hideChooserButton.setText("Show Chooser");
+                } else {
+                    chooser.setVisible(true);
+                    hideChooserButton.setText("Hide Chooser");
+                }
+            }
+        });
+                
         panel.add(clearButton);
+        panel.add(hideChooserButton);
         JMenuBar menu = new JMenuBar();
         JMenu a = new JMenu();
         a.setText("FILE");
