@@ -19,14 +19,69 @@ import javax.swing.*;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 import javax.swing.filechooser.FileNameExtensionFilter;
-
+//import com.microsoft.windowsazure.services.core.storage.*;
+//import com.microsoft.windowsazure.services.blob.client.*;
 public class AzureApplet extends JApplet {
 
     private JPanel panel;
     private PadDraw draw;
     JColorChooser chooser;
+    
+//    public static final String storageConnectionString = 
+//    	    "DefaultEndpointsProtocol=http;" + 
+//    	    "AccountName=portalvhdskvxq9mzmh61c5;" + 
+//    	    "AccountKey=WiVtbH14RumlFBybM+AhWM7Nyc9hGBIsKpEDQUyEKld0I3+65VcooLdMx6+/6EdQjNuU681uWaMq/G4pQ7zAoQ==";
+    
+//    String storageConnectionString = 
+//    	    RoleEnvironment.getConfigurationSettings().get("StorageConnectionString");
+//    
+//    CloudBlobContainer container = blobClient.getContainerReference("mycontainer");
+//
+//    // Create the container if it does not exist
+//    container.createIfNotExist();
+// 
+//    BlobContainerPermissions containerPermissions = new BlobContainerPermissions();
+//
+//    //Include public access in the permissions object
+//	containerPermissions.setPublicAccess(BlobContainerPublicAccessType.CONTAINER);
+//
+//	//Set the permissions on the container
+//	container.uploadPermissions(containerPermissions);
+//	
+//	// Retrieve storage account from connection-string
+//	CloudStorageAccount storageAccount =
+//	    CloudStorageAccount.parse(storageConnectionString);
+//
+//	// Create the blob client
+//	CloudBlobClient blobClient = storageAccount.createCloudBlobClient();
+//
+//	// Retrieve reference to a previously created container
+//	CloudBlobContainer container = blobClient.getContainerReference("mycontainer");
+//
+//	// Create or overwrite the "myimage.jpg" blob with contents from a local file
+//	CloudBlockBlob blob = container.getBlockBlobReference("myimage.jpg");
+//	File source = new File("c:\\myimages\\myimage.jpg");
+//	blob.upload(new FileInputStream(source), source.length());
+//	
+//	// Retrieve storage account from connection-string
+//	CloudStorageAccount storageAccount =
+//	    CloudStorageAccount.parse(storageConnectionString);
+//
+//	// Create the blob client
+//	CloudBlobClient blobClient = storageAccount.createCloudBlobClient();
+//
+//	// Retrieve reference to a previously created container
+//	CloudBlobContainer container = blobClient.getContainerReference("mycontainer");
+//
+//	// Loop over blobs within the container and output the URI to each of them
+//	for (ListBlobItem blobItem : container.listBlobs()) {
+//	    System.out.println(blobItem.getUri());
+//	}
+	
+	
+    
 
-    @Override
+    //@Override
     public void init() {
         try {
             javax.swing.SwingUtilities.invokeAndWait(new Runnable() {
@@ -111,15 +166,18 @@ public class AzureApplet extends JApplet {
         JMenuBar menu = new JMenuBar();
         JMenu a = new JMenu();
         a.setText("FILE");
+        menu.add(a);
+        JMenu blob = new JMenu();
+        blob.setText("Blob");  
+        menu.add(blob);
         JMenuItem save = new JMenuItem();
         save.setText("Save");
         save.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 saveImage();
             }
-        });
-        menu.add(a);
-        a.add(save);
+        });       
+        blob.add(save);     
         JMenuItem load = new JMenuItem();
         load.setText("Load");
         load.addActionListener(new java.awt.event.ActionListener() {
@@ -127,7 +185,7 @@ public class AzureApplet extends JApplet {
                 loadmenu(evt);
             }
         });
-        a.add(load);
+        blob.add(load);
         setJMenuBar(menu);
         menu.setVisible(true);
 
