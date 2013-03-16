@@ -79,11 +79,14 @@ public class BlobConnection {
     
     public boolean upload(RenderedImage image, String imageName) {
         try {
+            FileInputStream stream;
             CloudBlockBlob blob = container.getBlockBlobReference(imageName);
             File newFile = new File(imageName);
             newFile.deleteOnExit();
             ImageIO.write(image, "jpg", newFile);
-            blob.upload(new FileInputStream(newFile), newFile.length());
+            blob.upload(stream = new FileInputStream(newFile), newFile.length());
+            stream.close();
+            newFile.delete();
             return true;
         } catch (IOException ex) {
             Logger.getLogger(BlobConnection.class.getName()).log(Level.SEVERE, null, ex);
