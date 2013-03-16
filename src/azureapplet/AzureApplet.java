@@ -209,6 +209,7 @@ public class AzureApplet extends JApplet {
             }
 
             private void loadblobImage() {
+                
                 BlobConnection connection = new BlobConnection();
                 connection.connect();
 //                ArrayList<ListBlobItem> list = connection.getList();
@@ -222,14 +223,22 @@ public class AzureApplet extends JApplet {
                         "Blob load", 1);
                 if (fileName != null) {
                     File newFile = connection.downLoad(fileName);
-                    try {
-                        BufferedImage newImage = ImageIO.read(newFile);
-                        newFile.delete();
-                        draw.setNewImage(newImage);
-                    } catch (IOException ex) {
-                        Logger.getLogger(AzureApplet.class.getName()).log(Level.SEVERE, null, ex);
+                    if (newFile != null) {
+                        try {
+                            BufferedImage newImage = ImageIO.read(newFile);
+                            newFile.delete();
+                            draw.setNewImage(newImage);
+                        } catch (IOException ex) {
+                            Logger.getLogger(AzureApplet.class.getName()).log(Level.SEVERE, null, ex);
+                            JOptionPane.showMessageDialog(rootPane, "Image load failed! Reason: " + ex);
+                        }
+                    } else {
+                        JOptionPane.showMessageDialog(rootPane, "Image load failed! Reason: Incorrect File Name");
                     }
+                } else {
+                    
                 }
+
             }
 
 //            private String displayListOfItems(String[] blobNames) {
@@ -243,12 +252,20 @@ public class AzureApplet extends JApplet {
 //                pmenu.setLocation(50, 50);
 //                return "lol";
 //            }
-        });
-        blob.add(load);
-        setJMenuBar(menu);
-        menu.setVisible(true);
+            }
+
+            );
+        blob.add (load);
+
+            setJMenuBar(menu);
+
+            menu.setVisible (
+        
+        true);
 
     }
+
+    
 
     public void makeColorButton(final Color color) {
         JButton tempButton = new JButton();

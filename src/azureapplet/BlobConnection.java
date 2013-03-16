@@ -36,7 +36,7 @@ public class BlobConnection {
     public CloudBlobClient blobClient;
 
     public boolean connect() {
-        
+
         boolean secondTry = false;
         try {
             account = CloudStorageAccount.parse(storageConnectionString1);
@@ -47,7 +47,7 @@ public class BlobConnection {
         if (secondTry) {
             try {
                 account = CloudStorageAccount.parse(storageConnectionString2);
-            } catch (    URISyntaxException | InvalidKeyException ex) {
+            } catch (URISyntaxException | InvalidKeyException ex) {
                 Logger.getLogger(BlobConnection.class.getName()).log(Level.SEVERE, null, ex);
                 return false;
             }
@@ -66,7 +66,7 @@ public class BlobConnection {
         }
         return true;
     }
-    
+
     public boolean upload(RenderedImage image, String imageName) {
         try {
             FileInputStream stream;
@@ -82,46 +82,56 @@ public class BlobConnection {
             Logger.getLogger(BlobConnection.class.getName()).log(Level.SEVERE, null, ex);
             return false;
         }
-    }   
-        public ArrayList getList() {
-            ArrayList<ListBlobItem> array = new ArrayList<>();
-            for (ListBlobItem blob : container.listBlobs()) {
-                array.add((blob));
-            }
-            return array;
+    }
+
+    public ArrayList getList() {
+        ArrayList<ListBlobItem> array = new ArrayList<>();
+        for (ListBlobItem blob : container.listBlobs()) {
+            array.add((blob));
         }
-        
-        public File downLoad(String fileName) {
+        return array;
+    }
+
+    public File downLoad(String fileName) {
+        try {
             CloudBlob blob = null;
             File newFile = new File(fileName);
             FileOutputStream stream;
-            ArrayList<ListBlobItem> array = getList();
-        try {
-            for (ListBlobItem blob2 : array) {
-                if (blob2.getUri().toString().contains(fileName)) {
-                    blob = (CloudBlob) blob2;
-                    if (fileName.equals(blob.getName())) {
-                    break;
-                    } else {
-                        blob = null;
-                    }
-                }
-            }
+            blob = getBlob(fileName);
             if (blob == null) {
                 return null;
             }
             blob.download(stream = new FileOutputStream(fileName));
             stream.close();
             return newFile;
-        } catch (URISyntaxException ex) {
-            Logger.getLogger(BlobConnection.class.getName()).log(Level.SEVERE, null, ex);
-            return null;
-        } catch (IOException | StorageException ex) {
+        } catch (StorageException | IOException ex) {
             Logger.getLogger(BlobConnection.class.getName()).log(Level.SEVERE, null, ex);
             return null;
         }
-            
+
+    }
+
+    private CloudBlob getBlob(String fileName) {
+        CloudBlob blob = null;
+        ArrayList<ListBlobItem> array = getList();
+        for (ListBlobItem blob2 : array) {
+            if (blob2.getUri().toString().contains(fileName)) {
+                try {
+                    blob = (CloudBlob) blob2;
+                    if (fileName.equals(blob.getName())) {
+                        return blob;
+                    } else {
+                        blob = null;
+                    }
+                } catch (URISyntaxException ex) {
+                    Logger.getLogger(BlobConnection.class.getName()).log(Level.SEVERE, null, ex);
+                }
+            }
         }
-        
-    
+        return null;
+    }
+
+    public boolean delete(String fileName) {
+        return true;
+    }
 }
