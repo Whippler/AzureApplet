@@ -272,7 +272,7 @@ public class AzureApplet extends JApplet {
                     if (result == 0) {
                         JOptionPane.showMessageDialog(rootPane, "Deletion successful!");
                     } else if (result == -1) {
-                        JOptionPane.showMessageDialog(rootPane, "Image load failed! Reason: File requested was not found");
+                        JOptionPane.showMessageDialog(rootPane, "Image load failed! Reason: File requested was not found.");
                     } else if (result == -2) {
                         JOptionPane.showMessageDialog(rootPane, "Image load failed! Reason: Storage error");
                     } else {
