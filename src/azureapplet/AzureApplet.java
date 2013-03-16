@@ -16,6 +16,8 @@ import java.io.File;
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.imageio.ImageIO;
 import javax.swing.*;
 import javax.swing.event.ChangeEvent;
@@ -209,26 +211,38 @@ public class AzureApplet extends JApplet {
             private void loadblobImage() {
                 BlobConnection connection = new BlobConnection();
                 connection.connect();
-                ArrayList<ListBlobItem> list = connection.getList();
-                String[] blobNames = new String[list.size()];
-
-                for (int i = 0; i < list.size(); i++) {
-                    blobNames[i] = list.get(i).getUri().toString();
+//                ArrayList<ListBlobItem> list = connection.getList();
+//                String[] blobNames = new String[list.size()];
+//
+//                for (int i = 0; i < list.size(); i++) {
+//                    blobNames[i] = list.get(i).getUri().toString();
+//                }
+//                String s = displayListOfItems(blobNames);
+                String fileName = JOptionPane.showInputDialog(null, "Give a name to the file to load from the blob:",
+                        "Blob load", 1);
+                if (fileName != null) {
+                    File newFile = connection.downLoad(fileName);
+                    try {
+                        BufferedImage newImage = ImageIO.read(newFile);
+                        newFile.delete();
+                        draw.setNewImage(newImage);
+                    } catch (IOException ex) {
+                        Logger.getLogger(AzureApplet.class.getName()).log(Level.SEVERE, null, ex);
+                    }
                 }
-                String s = displayListOfItems(blobNames);
             }
 
-            private String displayListOfItems(String[] blobNames) {
-                JPopupMenu pmenu;
-                pmenu = new JPopupMenu();
-                for (String string : blobNames) {
-                    JMenuItem item = new JMenuItem(string);
-                    pmenu.add(item);
-                }
-            pmenu.setVisible(true);
-            pmenu.setLocation(50,50);
-            return "lol";
-            }
+//            private String displayListOfItems(String[] blobNames) {
+//                JPopupMenu pmenu;
+//                pmenu = new JPopupMenu();
+//                for (String string : blobNames) {
+//                    JMenuItem item = new JMenuItem(string);
+//                    pmenu.add(item);
+//                }
+//                pmenu.setVisible(true);
+//                pmenu.setLocation(50, 50);
+//                return "lol";
+//            }
         });
         blob.add(load);
         setJMenuBar(menu);

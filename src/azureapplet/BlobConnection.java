@@ -92,16 +92,31 @@ public class BlobConnection {
         }
         
         public File downLoad(String fileName) {
-            CloudBlockBlob blob;
-            File newFile;
+            CloudBlob blob = null;
+            File newFile = new File(fileName);
             FileOutputStream stream;
+            ArrayList<ListBlobItem> array = getList();
         try {
-            blob = container.getBlockBlobReference(fileName);
+            for (ListBlobItem blob2 : array) {
+                if (blob2.getUri().toString().contains(fileName)) {
+                    blob = (CloudBlob) blob2;
+                    if (fileName.equals(blob.getName())) {
+                    break;
+                    } else {
+                        blob = null;
+                    }
+                }
+            }
+            if (blob == null) {
+                return null;
+            }
             blob.download(stream = new FileOutputStream(fileName));
-            newFile = new File("fileName");
             stream.close();
             return newFile;
-        } catch (IOException | URISyntaxException | StorageException ex) {
+        } catch (URISyntaxException ex) {
+            Logger.getLogger(BlobConnection.class.getName()).log(Level.SEVERE, null, ex);
+            return null;
+        } catch (IOException | StorageException ex) {
             Logger.getLogger(BlobConnection.class.getName()).log(Level.SEVERE, null, ex);
             return null;
         }
