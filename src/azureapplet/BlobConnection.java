@@ -131,7 +131,26 @@ public class BlobConnection {
         return null;
     }
 
-    public boolean delete(String fileName) {
-        return true;
+    public int delete(String fileName) {
+        final int SUCCESS = 0;
+        final int FILE_NOT_FOUND = -1;
+        final int FAILURE = -2;
+        final int ERROR = -3;
+         try {
+            CloudBlob blob = null;
+             blob = getBlob(fileName);
+            if (blob == null) {
+                return FILE_NOT_FOUND;
+            }
+            blob.delete();
+            if (blob.exists()) {
+                return FAILURE;
+            }else {
+                return SUCCESS;
+            }
+        } catch (StorageException ex) {
+            Logger.getLogger(BlobConnection.class.getName()).log(Level.SEVERE, null, ex);
+            return ERROR;
+        }
     }
 }

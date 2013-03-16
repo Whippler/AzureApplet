@@ -209,7 +209,7 @@ public class AzureApplet extends JApplet {
             }
 
             private void loadblobImage() {
-                
+
                 BlobConnection connection = new BlobConnection();
                 connection.connect();
 //                ArrayList<ListBlobItem> list = connection.getList();
@@ -236,11 +236,9 @@ public class AzureApplet extends JApplet {
                         JOptionPane.showMessageDialog(rootPane, "Image load failed! Reason: Incorrect File Name");
                     }
                 } else {
-                    
                 }
 
             }
-
 //            private String displayListOfItems(String[] blobNames) {
 //                JPopupMenu pmenu;
 //                pmenu = new JPopupMenu();
@@ -252,20 +250,45 @@ public class AzureApplet extends JApplet {
 //                pmenu.setLocation(50, 50);
 //                return "lol";
 //            }
+        });
+        blob.add(load);
+        JMenuItem delete = new JMenuItem();
+        delete.setText("(ADMIN) Delete");
+        delete.addActionListener(new java.awt.event.ActionListener() {
+
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                deleteBlob();
             }
 
-            );
-        blob.add (load);
+            private void deleteBlob() {
+                String password = JOptionPane.showInputDialog(null, "Give the admin password.",
+                        "Blob load", 1);
+                if (password.equals("Mursukuningas")) {
+                    String fileName = JOptionPane.showInputDialog(null, "Give a name to the file to delete:",
+                            "Blob load", 1);
+                    BlobConnection connection = new BlobConnection();
+                    connection.connect();
+                    int result = connection.delete(fileName);
+                    if (result == 0) {
+                        JOptionPane.showMessageDialog(rootPane, "Deletion successful!");
+                    } else if (result == -1) {
+                        JOptionPane.showMessageDialog(rootPane, "Image load failed! Reason: File requested was not found");
+                    } else if (result == -2) {
+                        JOptionPane.showMessageDialog(rootPane, "Image load failed! Reason: Storage error");
+                    } else {
+                        JOptionPane.showMessageDialog(rootPane, "Image load failed! Reason: Java Error");
+                    }
+                } else {
+                    JOptionPane.showMessageDialog(rootPane, "You shouldn't be tinkering around here");
+                }
+            }
+        });
+        blob.add(delete);
+        setJMenuBar(menu);
 
-            setJMenuBar(menu);
-
-            menu.setVisible (
-        
-        true);
+        menu.setVisible(true);
 
     }
-
-    
 
     public void makeColorButton(final Color color) {
         JButton tempButton = new JButton();
