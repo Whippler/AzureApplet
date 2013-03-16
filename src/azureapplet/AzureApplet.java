@@ -26,12 +26,11 @@ public class AzureApplet extends JApplet {
     private JPanel panel;
     private PadDraw draw;
     JColorChooser chooser;
-    
+
 //    public static final String storageConnectionString = 
 //    	    "DefaultEndpointsProtocol=http;" + 
 //    	    "AccountName=portalvhdskvxq9mzmh61c5;" + 
 //    	    "AccountKey=WiVtbH14RumlFBybM+AhWM7Nyc9hGBIsKpEDQUyEKld0I3+65VcooLdMx6+/6EdQjNuU681uWaMq/G4pQ7zAoQ==";
-    
 //    String storageConnectionString = 
 //    	    RoleEnvironment.getConfigurationSettings().get("StorageConnectionString");
 //    
@@ -77,14 +76,11 @@ public class AzureApplet extends JApplet {
 //	for (ListBlobItem blobItem : container.listBlobs()) {
 //	    System.out.println(blobItem.getUri());
 //	}
-	
-	
-    
-
     //@Override
     public void init() {
         try {
             javax.swing.SwingUtilities.invokeAndWait(new Runnable() {
+
                 @Override
                 public void run() {
                     createGUI();
@@ -111,6 +107,7 @@ public class AzureApplet extends JApplet {
         //VÄRIT
         chooser = new JColorChooser();
         ChangeListener changeListener = new ChangeListener() {
+
             public void stateChanged(ChangeEvent changeEvent) {
                 draw.changeColor(chooser.getColor());
             }
@@ -119,9 +116,9 @@ public class AzureApplet extends JApplet {
         JPanel previewPanel = new JPanel();
         previewPanel.setVisible(false);
         chooser.setPreviewPanel(previewPanel);
-       
-        
-        
+
+
+
         panel.add(chooser);
 //        valikko.setBounds(100, 1, 300, 25);
 //        valikko.setBackground(Color.GRAY);
@@ -144,12 +141,14 @@ public class AzureApplet extends JApplet {
 
         JButton clearButton = new JButton("Clear");
         clearButton.addActionListener(new ActionListener() {
+
             public void actionPerformed(ActionEvent e) {
                 draw.clear();
             }
         });
         final JButton hideChooserButton = new JButton("Hide chooser");
         hideChooserButton.addActionListener(new ActionListener() {
+
             public void actionPerformed(ActionEvent e) {
                 if (chooser.isVisible()) {
                     chooser.setVisible(false);
@@ -160,7 +159,7 @@ public class AzureApplet extends JApplet {
                 }
             }
         });
-                
+
         panel.add(clearButton);
         panel.add(hideChooserButton);
         JMenuBar menu = new JMenuBar();
@@ -168,19 +167,39 @@ public class AzureApplet extends JApplet {
         a.setText("FILE");
         menu.add(a);
         JMenu blob = new JMenu();
-        blob.setText("Blob");  
+        blob.setText("Blob");
         menu.add(blob);
         JMenuItem save = new JMenuItem();
         save.setText("Save");
         save.addActionListener(new java.awt.event.ActionListener() {
+
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                saveImage();
+                saveBlobImage();
             }
-        });       
-        blob.add(save);     
+
+            private void saveBlobImage() {
+                String fileName = JOptionPane.showInputDialog(null, "Give a name to the file to upload to the blob:",
+                        "Blob save", 1);
+                if (fileName != null) {
+                    RenderedImage image = convertToRenderedImage(draw.image);
+                    BlobConnection connection = new BlobConnection();
+                    connection.connect();
+                    if(connection.upload(image, fileName)) {
+                        JOptionPane.showMessageDialog(rootPane, "Image succesfully saved!");
+                    } else {
+                        JOptionPane.showMessageDialog(rootPane, "Image save failed!");
+                    }
+                } else {
+                    return;
+                }
+
+            }
+        });
+        blob.add(save);
         JMenuItem load = new JMenuItem();
         load.setText("Load");
         load.addActionListener(new java.awt.event.ActionListener() {
+
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 loadmenu(evt);
             }
@@ -197,12 +216,13 @@ public class AzureApplet extends JApplet {
         tempButton.setPreferredSize(new Dimension(16, 16));
         panel.add(tempButton);
         tempButton.addActionListener(new ActionListener() {
+
             public void actionPerformed(ActionEvent e) {
                 draw.changeColor(color);
             }
         });
     }
-    
+
     private void loadmenu(java.awt.event.ActionEvent evt) {
         File file = loadImageActionPerformed();
         if (file == null) {
@@ -216,7 +236,7 @@ public class AzureApplet extends JApplet {
             }
         }
     }
-    
+
     private File loadImageActionPerformed() {
         JFileChooser chooser = new JFileChooser();
         chooser.showOpenDialog(null);
@@ -224,7 +244,7 @@ public class AzureApplet extends JApplet {
 
         return file;
     }
-    
+
     public boolean saveImage() {
         JFileChooser filechooser = new JFileChooser();
         FileNameExtensionFilter filter = new FileNameExtensionFilter("JPG Images", "jpg");
@@ -242,7 +262,7 @@ public class AzureApplet extends JApplet {
         }
         return false;
     }
-    
+
     public RenderedImage convertToRenderedImage(Image image) {
 
         BufferedImage bImage = new BufferedImage(image.getWidth(null), image.getHeight(null), BufferedImage.TYPE_INT_RGB);

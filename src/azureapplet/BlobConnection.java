@@ -77,12 +77,24 @@ public class BlobConnection {
         return true;
     }
     
-    public boolean upload(RenderedImage image, String imageName) throws URISyntaxException, StorageException, IOException{
-        CloudBlockBlob blob = container.getBlockBlobReference(imageName);
-        File newFile = new File(imageName);
-        ImageIO.write(image, "jpg", newFile);
-        blob.upload(new FileInputStream(newFile), newFile.length());
-        return true;
+    public boolean upload(RenderedImage image, String imageName) {
+        try {
+            CloudBlockBlob blob = container.getBlockBlobReference(imageName);
+            File newFile = new File(imageName);
+            newFile.deleteOnExit();
+            ImageIO.write(image, "jpg", newFile);
+            blob.upload(new FileInputStream(newFile), newFile.length());
+            return true;
+        } catch (IOException ex) {
+            Logger.getLogger(BlobConnection.class.getName()).log(Level.SEVERE, null, ex);
+            return false;
+        } catch (URISyntaxException ex) {
+            Logger.getLogger(BlobConnection.class.getName()).log(Level.SEVERE, null, ex);
+            return false;
+        } catch (StorageException ex) {
+            Logger.getLogger(BlobConnection.class.getName()).log(Level.SEVERE, null, ex);
+            return false;
+        }
         
     }
 }
