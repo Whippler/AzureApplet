@@ -8,11 +8,10 @@ import com.microsoft.windowsazure.services.core.storage.*;
 import com.microsoft.windowsazure.services.blob.client.*;
 import java.awt.Image;
 import java.awt.image.RenderedImage;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
+import java.io.*;
 import java.net.URISyntaxException;
 import java.security.InvalidKeyException;
+import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.imageio.ImageIO;
@@ -41,20 +40,14 @@ public class BlobConnection {
         boolean secondTry = false;
         try {
             account = CloudStorageAccount.parse(storageConnectionString1);
-        } catch (URISyntaxException ex) {
-            Logger.getLogger(BlobConnection.class.getName()).log(Level.SEVERE, null, ex);
-            secondTry = true;
-        } catch (InvalidKeyException ex) {
+        } catch (URISyntaxException | InvalidKeyException ex) {
             Logger.getLogger(BlobConnection.class.getName()).log(Level.SEVERE, null, ex);
             secondTry = true;
         }
         if (secondTry) {
             try {
                 account = CloudStorageAccount.parse(storageConnectionString2);
-            } catch (URISyntaxException ex) {
-                Logger.getLogger(BlobConnection.class.getName()).log(Level.SEVERE, null, ex);
-                return false;
-            } catch (InvalidKeyException ex) {
+            } catch (    URISyntaxException | InvalidKeyException ex) {
                 Logger.getLogger(BlobConnection.class.getName()).log(Level.SEVERE, null, ex);
                 return false;
             }
@@ -67,10 +60,7 @@ public class BlobConnection {
             containerPermissions.setPublicAccess(BlobContainerPublicAccessType.CONTAINER);
             container.uploadPermissions(containerPermissions);
 
-        } catch (URISyntaxException ex) {
-            Logger.getLogger(BlobConnection.class.getName()).log(Level.SEVERE, null, ex);
-            return false;
-        } catch (StorageException ex) {
+        } catch (URISyntaxException | StorageException ex) {
             Logger.getLogger(BlobConnection.class.getName()).log(Level.SEVERE, null, ex);
             return false;
         }
@@ -88,16 +78,35 @@ public class BlobConnection {
             stream.close();
             newFile.delete();
             return true;
-        } catch (IOException ex) {
-            Logger.getLogger(BlobConnection.class.getName()).log(Level.SEVERE, null, ex);
-            return false;
-        } catch (URISyntaxException ex) {
-            Logger.getLogger(BlobConnection.class.getName()).log(Level.SEVERE, null, ex);
-            return false;
-        } catch (StorageException ex) {
+        } catch (IOException | URISyntaxException | StorageException ex) {
             Logger.getLogger(BlobConnection.class.getName()).log(Level.SEVERE, null, ex);
             return false;
         }
+    }   
+        public ArrayList getList() {
+            ArrayList<ListBlobItem> array = new ArrayList<>();
+            for (ListBlobItem blob : container.listBlobs()) {
+                array.add((blob));
+            }
+            return array;
+        }
         
-    }
+        public File downLoad(String fileName) {
+            CloudBlockBlob blob;
+            File newFile;
+            FileOutputStream stream;
+        try {
+            blob = container.getBlockBlobReference(fileName);
+            blob.download(stream = new FileOutputStream(fileName));
+            newFile = new File("fileName");
+            stream.close();
+            return newFile;
+        } catch (IOException | URISyntaxException | StorageException ex) {
+            Logger.getLogger(BlobConnection.class.getName()).log(Level.SEVERE, null, ex);
+            return null;
+        }
+            
+        }
+        
+    
 }
