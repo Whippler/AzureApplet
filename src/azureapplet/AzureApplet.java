@@ -1,5 +1,6 @@
 package azureapplet;
 
+import com.microsoft.windowsazure.services.blob.client.CloudBlob;
 import com.microsoft.windowsazure.services.blob.client.ListBlobItem;
 import java.awt.BorderLayout;
 import java.awt.Color;
@@ -133,7 +134,7 @@ public class AzureApplet extends JApplet {
         locload.addActionListener(new java.awt.event.ActionListener() {
 
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-               loadmenu(evt);
+                loadmenu(evt);
             }
         });
         a.add(locsave);
@@ -180,15 +181,20 @@ public class AzureApplet extends JApplet {
 
                 BlobConnection connection = new BlobConnection();
                 connection.connect();
-//                ArrayList<ListBlobItem> list = connection.getList();
-//                String[] blobNames = new String[list.size()];
-//
-//                for (int i = 0; i < list.size(); i++) {
-//                    blobNames[i] = list.get(i).getUri().toString();
+
 //                }
 //                String s = displayListOfItems(blobNames);
-                String fileName = JOptionPane.showInputDialog(null, "Give a name to the file to load from the blob:",
-                        "Blob load", 1);
+                ArrayList<ListBlobItem> array = connection.getList();
+                String viesti = "Give a name to the file to load from the blob:\n";
+                ArrayList<ListBlobItem> list = connection.getList();
+
+                for (int i = 0; i < list.size(); i++) {
+                    viesti = viesti + list.get(i).getUri().toString() + "\n";
+                }
+                JOptionPane pane = new JOptionPane();
+                JScrollPane scroll = new JScrollPane(pane, JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED, JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
+
+                String fileName = pane.showInputDialog(null, viesti, 1);
                 if (fileName != null) {
                     File newFile = connection.downLoad(fileName);
                     if (newFile != null) {
@@ -221,36 +227,49 @@ public class AzureApplet extends JApplet {
         });
         blob.add(load);
         JMenuItem delete = new JMenuItem();
-        delete.setText("(ADMIN) Delete");
-        delete.addActionListener(new java.awt.event.ActionListener() {
 
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                deleteBlob();
-            }
+        delete.setText(
+                "(ADMIN) Delete");
+        delete.addActionListener(
+                new java.awt.event.ActionListener() {
 
-            private void deleteBlob() {
-                String password = JOptionPane.showInputDialog(null, "Give the admin password.",
-                        "Blob load", 1);
-                if (password.equals("Mursukuningas")) {
-                    String fileName = JOptionPane.showInputDialog(null, "Give a name to the file to delete:",
-                            "Blob load", 1);
-                    BlobConnection connection = new BlobConnection();
-                    connection.connect();
-                    int result = connection.delete(fileName);
-                    if (result == 0) {
-                        JOptionPane.showMessageDialog(rootPane, "Deletion successful!");
-                    } else if (result == -1) {
-                        JOptionPane.showMessageDialog(rootPane, "Image load failed! Reason: File requested was not found.");
-                    } else if (result == -2) {
-                        JOptionPane.showMessageDialog(rootPane, "Image load failed! Reason: Storage error");
-                    } else {
-                        JOptionPane.showMessageDialog(rootPane, "Image load failed! Reason: Java Error");
+                    public void actionPerformed(java.awt.event.ActionEvent evt) {
+                        deleteBlob();
                     }
-                } else {
-                    JOptionPane.showMessageDialog(rootPane, "You shouldn't be tinkering around here");
-                }
-            }
-        });
+
+                    private void deleteBlob() {
+                        String password = JOptionPane.showInputDialog(null, "Give the admin password.",
+                                "Blob load", 1);
+                        if (password.equals("Mursukuningas")) {
+                            BlobConnection connection = new BlobConnection();
+                            connection.connect();
+                            
+                            ArrayList<ListBlobItem> array = connection.getList();
+                            String viesti = "Give a name to the file to delete:\n";
+                            ArrayList<ListBlobItem> list = connection.getList();
+                            for (int i = 0; i < list.size(); i++) {
+                                viesti = viesti + list.get(i).getUri().toString() + "\n";
+                            }
+                            JOptionPane pane = new JOptionPane();
+                            JScrollPane scroll = new JScrollPane(pane, JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED, JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
+
+                            String fileName = pane.showInputDialog(null, viesti, 1);
+
+                            int result = connection.delete(fileName);
+                            if (result == 0) {
+                                JOptionPane.showMessageDialog(rootPane, "Deletion successful!");
+                            } else if (result == -1) {
+                                JOptionPane.showMessageDialog(rootPane, "Image load failed! Reason: File requested was not found.");
+                            } else if (result == -2) {
+                                JOptionPane.showMessageDialog(rootPane, "Image load failed! Reason: Storage error");
+                            } else {
+                                JOptionPane.showMessageDialog(rootPane, "Image load failed! Reason: Java Error");
+                            }
+                        } else {
+                            JOptionPane.showMessageDialog(rootPane, "You shouldn't be tinkering around here");
+                        }
+                    }
+                });
         blob.add(delete);
         setJMenuBar(menu);
 

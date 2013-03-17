@@ -84,7 +84,7 @@ public class BlobConnection {
         }
     }
 
-    public ArrayList getList() {
+    public ArrayList<ListBlobItem> getList() {
         ArrayList<ListBlobItem> array = new ArrayList<>();
         for (ListBlobItem blob : container.listBlobs()) {
             array.add((blob));
